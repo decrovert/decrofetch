@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# colour constants
+COLOUR_CYAN=6
+
+# map with properties and the commands
+# that are needed to get them
+PROPERTIES="\
+user  ;id -un;\n\
+host  ;echo $HOSTNAME;\n\
+shell ;echo $SHELL;\n\
+kernel;uname -r;\n\
+uptime;uptime -p\n\
+"
+
+# loop through map entries, line by line
+for i in $(seq "$(printf "$PROPERTIES" | wc -l)")
+do
+    current_property=""
+    current_command=""
+
+    # get the property's name, removing the \n character combination
+    # x = { 1, 2, 3, 4, 5 }
+    # y = { 1, 3, 5, 7, 9 }
+    # y = 2x - 1
+    current_property=$(echo "$PROPERTIES" | cut -d ";" -f "$((2*i-1))" | sed "s/\\\n//g")
+
+    # get the current command by indexing the map
+    # x = { 1, 2, 3, 4, 5 }
+    # y = { 2, 4, 6, 8, 10 }
+    # y = 2x
+    current_command=$(echo "$PROPERTIES" | cut -d ";" -f "$((i*2))" | sed "s/\\\n//g")
+
+    tput setaf $COLOUR_CYAN
+    printf "$current_property: "
+    tput sgr0
+    printf "$($current_command)\n"
+
+    unset current_property
+    unset current_command
+done
