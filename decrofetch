@@ -2,6 +2,7 @@
 
 # colour constants
 COLOUR_CYAN=6
+COLOUR_GREEN=2
 
 # map with properties and the commands
 # that are needed to get them
@@ -32,9 +33,13 @@ do
     current_command=$(echo "$PROPERTIES" | cut -d ";" -f "$((i*2))" | sed "s/\\\n//g")
 
     tput setaf $COLOUR_CYAN
-    printf "$current_property: "
+    printf "$current_property"
     tput sgr0
-    printf "$($current_command)\n"
+    printf " "
+    tput setaf $COLOUR_CYAN
+    printf -- "->"
+    tput sgr0
+    printf " $($current_command)\n"
 
     unset current_property
     unset current_command
